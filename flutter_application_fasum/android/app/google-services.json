@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "544488593908",
+    "project_id": "my-first-project-8de90",
+    "storage_bucket": "my-first-project-8de90.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544488593908:android:f833c41fe1a6ebd515c1a1",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_fasum"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiZAgJN1eVOVD8T7luEXyZ7QB7yCGgxqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
