@@ -6,8 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({super.key});
@@ -66,7 +67,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       if (pickedFile != null) {
         final bytes = await pickedFile.readAsBytes();
         setState(() {
-          _pickedFile = pickedFile;
+          _pickedFile = _pickedFile;
           _imageBytes = bytes;
           _image = File(pickedFile.path);
           _descriptionController.clear();
@@ -151,7 +152,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
     if (uid == null) {
       setState(() => _isUploading = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User not found.')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('User not found.')));
       return;
     }
     try {
@@ -182,14 +185,16 @@ class _AddPostScreenState extends State<AddPostScreen> {
       debugPrint('Upload failed: $e');
       if (!mounted) return;
       setState(() => _isUploading = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to upload the post: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to upload the post: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Post')), 
+      appBar: AppBar(title: const Text('Add Post')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
