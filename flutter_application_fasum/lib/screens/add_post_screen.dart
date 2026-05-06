@@ -6,9 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({super.key});
@@ -18,7 +17,7 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
-  XFile? _pickedFile;
+  File? _pickedFile;
   Uint8List? _imageBytes;
   String? _base64Image;
   File? _image;
@@ -85,22 +84,25 @@ class _AddPostScreenState extends State<AddPostScreen> {
   }
 
   Future<void> _compressAndEncodeImage() async {
-    if (_pickedFile == null || _imageBytes == null) return;
+    if (_imageBytes == null) return;
+
     if (kIsWeb) {
-      // flutter_image_compress tidak mendukung web, gunakan bytes langsung
       setState(() {
         _base64Image = base64Encode(_imageBytes!);
       });
-    } else {
-      final compressedImage = await FlutterImageCompress.compressWithFile(
-        File(_pickedFile!.path).path,
-        quality: 50,
-      );
-      if (compressedImage == null) return;
-      setState(() {
-        _base64Image = base64Encode(compressedImage);
-      });
+      return;
     }
+
+    final compressedBytes = await FlutterImageCompress.compressWithList(
+      _imageBytes!,
+      quality: 50,
+    );
+
+    if (compressedBytes.isEmpty) return;
+
+    setState(() {
+      _base64Image = base64Encode(compressedBytes);
+    });
   }
 
   Future<void> _getLocation() async {
@@ -149,9 +151,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
     if (uid == null) {
       setState(() => _isUploading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('User not found.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User not found.')));
       return;
     }
     try {
@@ -182,16 +182,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
       debugPrint('Upload failed: $e');
       if (!mounted) return;
       setState(() => _isUploading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to upload the post: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to upload the post: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Post')),
+      appBar: AppBar(title: const Text('Add Post')), 
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
