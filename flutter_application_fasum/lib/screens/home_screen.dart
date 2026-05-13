@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_fasum/screens/add_post_screen.dart';
+import 'package:flutter_application_fasum/screens/detail_screen.dart';
 import 'package:flutter_application_fasum/screens/sign_in_screen.dart';
 import 'package:intl/intl.dart';
 
@@ -15,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  double? get latitude => null;
+
   Future<void> signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
 
@@ -77,11 +80,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   : DateTime.parse(createdAtValue.toString());
               final fullName = data['fullName'] ?? 'Anonim';
               final category = data['category'] ?? 'Lainnya';
+              final latitude = data['latitude'] != null
+                  ? (data['latitude'] as num).toDouble()
+                  : 0.0;
+              final longitude = data['longitude'] != null
+                  ? (data['longitude'] as num).toDouble()
+                  : 0.0;
               String heroTag =
                   'fasum-image-${createdAt.millisecondsSinceEpoch}';
 
               return InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => DetailScreen(
+                        imageBase64: imageBase64,
+                        description: description,
+                        createdAt: createdAt,
+                        fullName: fullName,
+                        latitude: latitude,
+                        longitude: longitude,
+                        category: category,
+                        heroTag: heroTag,
+                      ),
+                    ),
+                  );
+                },
                 child: Card(
                   elevation: 1,
                   color: Theme.of(context).colorScheme.surfaceContainerLow,
